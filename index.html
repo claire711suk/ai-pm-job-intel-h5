@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>AI PM 求职情报日报</title>
+<style>
+  :root{
+    --bg:#f4f5f7;
+    --card:#ffffff;
+    --primary:#6C5CE7;
+    --primary-dark:#4834d4;
+    --accent:#00b894;
+    --warn:#e17055;
+    --text:#2d3436;
+    --sub:#636e72;
+    --border:#eceef1;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Arial,sans-serif;
+    color:var(--text);
+  }
+  .page{
+    max-width:480px;
+    margin:0 auto;
+    padding-bottom:40px;
+  }
+  header.hero{
+    background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+    color:#fff;
+    padding:32px 20px 28px;
+    border-radius:0 0 24px 24px;
+    text-align:center;
+  }
+  header.hero .date{
+    font-size:13px;
+    opacity:.85;
+    letter-spacing:1px;
+  }
+  header.hero h1{
+    margin:8px 0 4px;
+    font-size:22px;
+  }
+  header.hero .tagline{
+    font-size:13px;
+    opacity:.9;
+  }
+  .section{
+    margin:20px 16px 0;
+    background:var(--card);
+    border-radius:16px;
+    padding:18px 16px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.04);
+  }
+  .section h2{
+    font-size:16px;
+    margin:0 0 12px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .card-item{
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:12px;
+    margin-bottom:10px;
+  }
+  .card-item:last-child{margin-bottom:0;}
+  .card-item .row-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-weight:600;
+    font-size:14.5px;
+  }
+  .badge{
+    display:inline-block;
+    font-size:11px;
+    padding:2px 8px;
+    border-radius:20px;
+    background:#f0eefe;
+    color:var(--primary-dark);
+    white-space:nowrap;
+  }
+  .badge.new{background:#e6f9f2;color:#00895b;}
+  .badge.iter{background:#fff4e6;color:#e17055;}
+  .card-item .meta{
+    font-size:12.5px;
+    color:var(--sub);
+    margin-top:4px;
+    line-height:1.6;
+  }
+  .card-item .desc{
+    font-size:13px;
+    margin-top:6px;
+    line-height:1.6;
+  }
+  .card-item a{
+    color:var(--primary);
+    text-decoration:none;
+  }
+  .summary-box{
+    margin-top:14px;
+    background:#f8f7ff;
+    border-radius:10px;
+    padding:12px 14px;
+  }
+  .summary-box .label{
+    font-size:12px;
+    font-weight:600;
+    color:var(--primary-dark);
+    margin-bottom:6px;
+  }
+  .summary-box ul{
+    margin:0;
+    padding-left:18px;
+    font-size:13px;
+    line-height:1.8;
+    color:var(--text);
+  }
+  .signal-block{
+    margin-bottom:14px;
+  }
+  .signal-block .signal-label{
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--primary-dark);
+    margin-bottom:6px;
+  }
+  .signal-block .signal-item{
+    font-size:13px;
+    line-height:1.7;
+    margin-bottom:6px;
+    padding-left:4px;
+    border-left:3px solid var(--primary);
+    padding-left:10px;
+  }
+  .xhs-quote{
+    background:#fff9e6;
+    border-radius:10px;
+    padding:14px;
+    font-size:13.5px;
+    line-height:1.7;
+    font-style:italic;
+    color:#7a5c00;
+  }
+  .xhs-topics{
+    margin-top:12px;
+    font-size:13px;
+    line-height:1.8;
+  }
+  .tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .tag{
+    background:#eef1ff;
+    color:var(--primary-dark);
+    font-size:12.5px;
+    padding:5px 10px;
+    border-radius:20px;
+  }
+  .footer-tip{
+    margin:20px 16px 0;
+    text-align:center;
+    font-size:12.5px;
+    color:var(--sub);
+    padding:0 8px;
+  }
+  .empty{
+    font-size:13px;
+    color:var(--sub);
+    text-align:center;
+    padding:10px 0;
+  }
+</style>
+</head>
+<body>
+<div class="page" id="app"></div>
+
+<script>
+const REPORT = {
+  date: "2026年07月09日",
+  funding: {
+    items: [
+      {company:"可灵AI（快手旗下）", round:"新一轮增资", amount:"认购上限约30亿美元（204.47亿元人民币）", investor:"CPE源峰、国方创投、BlueFive、腾讯、中关村科学城基金等", type:"视频生成大模型", desc:"全球视频大模型公司最大额融资，投后估值达180亿美元"},
+      {company:"Etched", round:"最新一轮", amount:"单笔5亿美元（累计8亿美元）", investor:"未披露", type:"AI推理芯片", desc:"投后估值50亿美元，专注AI推理芯片"},
+      {company:"DeepSeek", round:"首次对外融资（进行中）", amount:"计划募资约70亿美元", investor:"未披露", type:"大模型", desc:"估值区间520-590亿美元，此前主要靠自有资金发展"}
+    ],
+    summary: [
+      "今日最热子赛道：视频生成大模型 + 具身智能（上半年460亿元砸向具身智能）",
+      "值得关注的新公司：DeepSeek首次启动外部融资，此前一直未融资",
+      "投资方偏好信号：头部集中明显，纯“包装器”型公司遇冷，有端到端工作流/专有数据/分销渠道的公司才拿得到钱"
+    ]
+  },
+  product: {
+    items: [
+      {company:"阿里", product:"QoderWork（办公AI产品全系升级）", tag:"iter", users:"企业用户", highlight:"打通悟空协同Agent与MuleRun自动化流程引擎", source:"36氪", url:"https://36kr.com/p/3879665206407427"},
+      {company:"腾讯", product:"企业微信AI智能体“大员”", tag:"new", users:"企业用户", highlight:"基于DeepSeek最新大模型构建", source:"新浪财经", url:"https://finance.sina.com.cn"},
+      {company:"字节跳动", product:"Seedance 2.5（预计7月9日发布）", tag:"iter", users:"C端创作者", highlight:"支持30秒标准视频与最长180秒长视频生成", source:"知乎", url:"https://zhuanlan.zhihu.com/p/670574382"},
+      {company:"谷歌", product:"Gemini 3.5 Pro（预计7月17日发布）", tag:"new", users:"全体用户", highlight:"全新底座重新预训练版本", source:"知乎", url:"https://zhuanlan.zhihu.com/p/670574382"}
+    ],
+    summary: [
+      "大厂今日发力方向：视频生成（字节Seedance）+ 企业智能体（腾讯/阿里办公场景）",
+      "值得关注的新技术：180秒长视频生成、全新底座重新预训练的Gemini 3.5",
+      "国内 vs 海外：国内聚焦企业办公场景落地，海外聚焦基座模型能力竞赛"
+    ]
+  },
+  jobs: {
+    items: [
+      {company:"腾讯", title:"AI产品经理培训生（校招）", type:"大厂", req:"面向全球顶尖产品人才，系统培养+专项训练", salary:"未披露"},
+      {company:"字节跳动·豆包", title:"大模型应用架构专家", type:"大厂", req:"深度理解大模型应用架构", salary:"128万元/年"},
+      {company:"综合行情", title:"AI产品经理（通用画像）", type:"大厂为主", req:"52%要求5-10年经验；需懂LLM/多模态/RAG，会Python/H5，能独立落地AI Demo", salary:"中位35k/月"}
+    ],
+    summary: [
+      "本周AI PM需求最多的公司类型：大厂（字节/阿里春招AI岗位占比接近50%-60%）",
+      "JD中高频出现的新要求：“技术理解+业务落地”双重能力；Agent生命周期细分岗位（Agent Infra PM、企业级Agent PM）开始出现",
+      "大厂 vs 创业公司差异：大厂看重规模化落地经验与跨团队协同；创业公司更看重独立判断与快速出结果"
+    ]
+  },
+  competitors: {
+    items: [
+      {product:"豆包", company:"字节跳动", type:"通用AI助手", feature:"写作、可溯源实时联网搜索、日常推理", feedback:"用户反馈良好，但即将下线智能体功能（7月15日）", insight:"拟人化新规倒逼产品收敛，值得关注监管对交互设计的影响"},
+      {product:"Kimi", company:"月之暗面", type:"通用AI助手", feature:"超长上下文，可处理数百页PDF文档", feedback:"长文档处理场景用户认可度高", insight:"差异化定位清晰，值得学习其“单点极致”打法"},
+      {product:"腾讯元宝", company:"腾讯", type:"通用AI助手", feature:"深度微信生态整合", feedback:"已下线智能体功能（6月30日）", insight:"生态位打法明确，但需警惕监管对“拟人化”边界的限制"},
+      {product:"DeepSeek", company:"DeepSeek", type:"大模型API/助手", feature:"峰谷定价机制（7月中）+ V4正式版上线", feedback:"用户对高峰时段涨价存在争议", insight:"用“定价”做产品设计的少见案例，值得研究其错峰逻辑"}
+    ],
+    summary: [
+      "本周最值得深度体验的产品：Kimi（长文档场景差异化明显）",
+      "用户痛点集中在：智能体拟人化边界收紧后的功能损失、DeepSeek峰谷定价引发的成本担忧",
+      "PM视角最有意思的设计决策：DeepSeek用峰谷定价做需求错峰，是少见的“用定价做产品”案例"
+    ]
+  },
+  targetCompanies: {
+    items: [],
+    summary: [
+      "本周暂无显著动态"
+    ]
+  },
+  signals: {
+    track: [
+      {label:"融资+产品+招聘三侧同时活跃的方向", text:"视频生成大模型（可灵融资+字节Seedance发布）与企业AI智能体（阿里/腾讯新品+对应招聘）→ 该赛道正从概念走向规模化竞争，入场窗口收窄"},
+      {label:"只有融资、尚无大厂大规模入场的方向", text:"具身智能（460亿元融资，但下游应用层仅分到19亿）→ 潜在机会窗口，尤其是应用层创业公司可重点关注"}
+    ],
+    job: [
+      {label:"本周JD新增的高频技能要求", text:"Agent生命周期细分岗位（Agent Infra PM、企业级Agent PM）、“技术理解+业务落地”双重能力 → 需优先补课RAG与Agent技术原理"},
+      {label:"哪类公司招聘在加速", text:"字节、阿里等大厂的Agent相关岗位 → 可作为重点投递方向"},
+      {label:"面试可能被问到的热点话题", text:"AI拟人化新规对产品设计的影响、DeepSeek峰谷定价这类“用定价做产品”的案例 → 提前准备相关素材"}
+    ]
+  },
+  xhs: {
+    quote: "今天刷到“元宝豆包千问下线智能体”的新闻，监管一出手，过去半年拼命堆的“拟人化”功能说没就没——做AI产品经理最怕的不是技术跟不上，是政策变化比迭代速度还快。",
+    topics: [
+      "选题1：从“智能体拟人化新规”看AI产品经理该如何提前预判政策风险",
+      "选题2：求职一线体感：大厂AI PM在抢的到底是“懂模型的人”还是“会落地的人”？"
+    ]
+  },
+  tags: ["#AI融资","#新产品","#AIPM求职","#竞品分析","#行业趋势","#AI监管","#Agent产品经理"]
+};
+
+function el(html){
+  const t = document.createElement('template');
+  t.innerHTML = html.trim();
+  return t.content;
+}
+
+function renderFunding(data){
+  const rows = data.items.map(i => `
+    <div class="card-item">
+      <div class="row-title"><span>${i.company}</span><span class="badge">${i.round}</span></div>
+      <div class="meta">💰 ${i.amount} ｜ 投资方：${i.investor}</div>
+      <div class="desc">${i.type} · ${i.desc}</div>
+    </div>
+  `).join('') || '<div class="empty">本周暂无显著动态</div>';
+  return `
+    <section class="section">
+      <h2>💰 一、融资动态</h2>
+      ${rows}
+      ${renderSummary('融资小结', data.summary)}
+    </section>
+  `;
+}
+
+function renderProduct(data){
+  const rows = data.items.map(i => `
+    <div class="card-item">
+      <div class="row-title"><span>${i.company} · ${i.product}</span><span class="badge ${i.tag}">${i.tag==='new'?'🆕全新':'🔄迭代'}</span></div>
+      <div class="meta">面向：${i.users}</div>
+      <div class="desc">${i.highlight}</div>
+      <div class="meta">来源：<a href="${i.url}" target="_blank">${i.source}</a></div>
+    </div>
+  `).join('') || '<div class="empty">本周暂无显著动态</div>';
+  return `
+    <section class="section">
+      <h2>🚀 二、大公司新应用</h2>
+      ${rows}
+      ${renderSummary('产品小结', data.summary)}
+    </section>
+  `;
+}
+
+function renderJobs(data){
+  const rows = data.items.map(i => `
+    <div class="card-item">
+      <div class="row-title"><span>${i.company}</span><span class="badge">${i.type}</span></div>
+      <div class="desc">${i.title}</div>
+      <div class="meta">核心要求：${i.req}</div>
+      <div class="meta">薪资：${i.salary}</div>
+    </div>
+  `).join('') || '<div class="empty">本周暂无显著动态</div>';
+  return `
+    <section class="section">
+      <h2>👔 三、职位与人才市场</h2>
+      ${rows}
+      ${renderSummary('职位小结', data.summary)}
+    </section>
+  `;
+}
+
+function renderCompetitors(data){
+  const rows = data.items.map(i => `
+    <div class="card-item">
+      <div class="row-title"><span>${i.product}</span><span class="badge">${i.company}</span></div>
+      <div class="meta">${i.type} · ${i.feature}</div>
+      <div class="desc">用户反馈：${i.feedback}</div>
+      <div class="desc">💡 ${i.insight}</div>
+    </div>
+  `).join('') || '<div class="empty">本周暂无显著动态</div>';
+  return `
+    <section class="section">
+      <h2>🔍 四、竞品拆解</h2>
+      ${rows}
+      ${renderSummary('竞品小结', data.summary)}
+    </section>
+  `;
+}
+
+function renderTargetCompanies(data){
+  const rows = data.items.length
+    ? data.items.map(i => `
+      <div class="card-item">
+        <div class="row-title"><span>${i.company}</span></div>
+        <div class="desc">${i.update}</div>
+      </div>
+    `).join('')
+    : '<div class="empty">本周暂无显著动态</div>';
+  return `
+    <section class="section">
+      <h2>🏢 五、目标公司情报</h2>
+      ${rows}
+      ${renderSummary('公司情报小结', data.summary)}
+    </section>
+  `;
+}
+
+function renderSignals(data){
+  const track = data.track.map(s => `
+    <div class="signal-item"><b>${s.label}：</b><br>${s.text}</div>
+  `).join('');
+  const job = data.job.map(s => `
+    <div class="signal-item"><b>${s.label}：</b><br>${s.text}</div>
+  `).join('');
+  return `
+    <section class="section">
+      <h2>🔗 六、综合信号与求职洞察</h2>
+      <div class="signal-block">
+        <div class="signal-label">赛道信号</div>
+        ${track}
+      </div>
+      <div class="signal-block">
+        <div class="signal-label">求职信号</div>
+        ${job}
+      </div>
+    </section>
+  `;
+}
+
+function renderXhs(data){
+  return `
+    <section class="section">
+      <h2>📝 七、小红书内容素材</h2>
+      <div class="xhs-quote">${data.quote}</div>
+      <div class="xhs-topics">
+        ${data.topics.map(t => `<div>${t}</div>`).join('')}
+      </div>
+    </section>
+  `;
+}
+
+function renderTags(tags){
+  return `
+    <section class="section">
+      <h2>📌 八、今日标签</h2>
+      <div class="tags">
+        ${tags.map(t => `<span class="tag">${t}</span>`).join('')}
+      </div>
+    </section>
+  `;
+}
+
+function renderSummary(label, list){
+  if(!list || !list.length) return '';
+  return `
+    <div class="summary-box">
+      <div class="label">${label}</div>
+      <ul>${list.map(t => `<li>${t}</li>`).join('')}</ul>
+    </div>
+  `;
+}
+
+function render(){
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <header class="hero">
+      <div class="date">📅 ${REPORT.date}</div>
+      <h1>🎯 AI PM 求职情报日报</h1>
+      <div class="tagline">求职信息助手 · 每日更新</div>
+    </header>
+    ${renderFunding(REPORT.funding)}
+    ${renderProduct(REPORT.product)}
+    ${renderJobs(REPORT.jobs)}
+    ${renderCompetitors(REPORT.competitors)}
+    ${renderTargetCompanies(REPORT.targetCompanies)}
+    ${renderSignals(REPORT.signals)}
+    ${renderXhs(REPORT.xhs)}
+    ${renderTags(REPORT.tags)}
+    <div class="footer-tip">💡 如需深入了解某条情报，告诉我"帮我展开XX公司"或"分析XX产品"，我会单独搜索。</div>
+  `;
+}
+
+render();
+</script>
+</body>
+</html>
