@@ -102,6 +102,35 @@
     color:var(--primary);
     text-decoration:none;
   }
+  .news-item{
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:12px;
+    margin-bottom:10px;
+  }
+  .news-item:last-child{margin-bottom:0;}
+  .news-item .news-title{
+    display:flex;
+    align-items:baseline;
+    gap:6px;
+    font-weight:600;
+    font-size:14.5px;
+    margin-bottom:8px;
+  }
+  .news-item .news-title .idx{
+    color:var(--primary);
+    font-weight:700;
+  }
+  .news-item .news-row{
+    font-size:13px;
+    line-height:1.7;
+    margin-bottom:4px;
+  }
+  .news-item .news-row:last-child{margin-bottom:0;}
+  .news-item .news-row .k{
+    color:var(--primary-dark);
+    font-weight:600;
+  }
   .summary-box{
     margin-top:14px;
     background:#f8f7ff;
@@ -138,32 +167,6 @@
     border-left:3px solid var(--primary);
     padding-left:10px;
   }
-  .xhs-quote{
-    background:#fff9e6;
-    border-radius:10px;
-    padding:14px;
-    font-size:13.5px;
-    line-height:1.7;
-    font-style:italic;
-    color:#7a5c00;
-  }
-  .xhs-topics{
-    margin-top:12px;
-    font-size:13px;
-    line-height:1.8;
-  }
-  .tags{
-    display:flex;
-    flex-wrap:wrap;
-    gap:8px;
-  }
-  .tag{
-    background:#eef1ff;
-    color:var(--primary-dark);
-    font-size:12.5px;
-    padding:5px 10px;
-    border-radius:20px;
-  }
   .footer-tip{
     margin:20px 16px 0;
     text-align:center;
@@ -197,6 +200,16 @@ const REPORT = {
       "投资方偏好信号：头部集中明显，纯“包装器”型公司遇冷，有端到端工作流/专有数据/分销渠道的公司才拿得到钱"
     ]
   },
+  keyNews: [
+    {event:"可灵AI创纪录融资", what:"快手旗下可灵AI完成新一轮增资，认购上限约30亿美元，投后估值180亿美元，创全球视频生成大模型融资纪录", why:"视频生成赛道首次出现接近独角兽量级的融资规模，说明资本已认定这是能规模化变现的方向", trend:"大模型赛道资本正从“通用基座”转向“应用场景清晰、有分发渠道”的垂直方向", implication:"视频/内容生成类AI产品经理岗位需求可能随之增加，可提前关注可灵、即梦等团队招聘"},
+    {event:"DeepSeek首次启动外部融资", what:"DeepSeek启动首次对外融资，计划募资约70亿美元，估值区间520-590亿美元", why:"此前DeepSeek一直未融资，此举标志着其商业化和扩张策略的转变", trend:"即便技术壁垒极强的公司，也开始需要资本加速商业化落地和团队扩张", implication:"DeepSeek商业化/产品相关岗位可能迎来扩招窗口，值得重点关注"},
+    {event:"字节跳动Seedance 2.5即将发布", what:"字节跳动视频生成模型Seedance 2.5预计7月9日发布，支持30秒标准视频与最长180秒长视频生成", why:"长视频生成能力是当前视频大模型的技术瓶颈，180秒是行业领先水平", trend:"大厂在视频生成上从“秒级片段”转向“分钟级完整叙事”能力竞争", implication:"面试中可能被问及对长视频生成产品化难点（一致性、成本）的理解"},
+    {event:"谷歌Gemini 3.5 Pro将于7月17日发布", what:"谷歌预计7月17日发布Gemini 3.5 Pro，为全新底座重新预训练版本", why:"这是对标GPT等基座模型的重要迭代，直接影响谷歌系AI产品的能力上限", trend:"海外大厂仍在基座模型能力上正面竞争，与国内厂商转向应用层形成对比", implication:"面试中可结合“国内做应用、海外拼基座”的差异谈行业判断"},
+    {event:"元宝/豆包/千问集中下线智能体功能", what:"腾讯元宝、字节豆包、阿里千问因《AI拟人化互动服务管理暂行办法》7月15日施行，集中下线智能体功能", why:"这是监管首次实质性影响头部AI产品的功能形态，过去半年重点投入的功能被迫收缩", trend:"AI产品设计必须把“合规边界”作为前置约束，而不是后置补救", implication:"面试热点话题，可提前准备“如何在合规约束下做产品设计”的案例和方法论"},
+    {event:"DeepSeek引入峰谷定价机制", what:"DeepSeek V4正式版7月中上线，同步引入峰谷定价机制，高峰时段API价格翻倍", why:"这是国内大模型厂商首次用“定价”而非“限流”来调节高峰期需求", trend:"大模型厂商商业化开始精细化，从“一口价”转向“分层运营”", implication:"这是“用定价做产品设计”的典型案例，PM面试中可作为差异化素材"},
+    {event:"腾讯企业微信上线AI智能体“大员”", what:"腾讯在企业微信中推出AI智能体“大员”，基于DeepSeek最新大模型构建", why:"大厂开始把第三方大模型能力嵌入自有生态位最强的产品（企业微信），而非只押注自研模型", trend:"“生态位+外部模型能力”可能成为企业级AI产品的主流打法之一", implication:"企业级/ToB Agent产品经理岗位的技术要求会更看重生态整合能力，而非单纯模型能力"},
+    {event:"具身智能融资结构性失衡", what:"2026年上半年具身智能领域融资超460亿元，但下游应用层企业仅分到19亿元，头部5家企业拿走约170亿元", why:"融资高度集中在“大脑/身体/关节”等硬件与基础设施层，应用层几乎无人问津", trend:"具身智能尚处基础设施建设期，应用层产品化的机会窗口还未真正打开", implication:"若考虑具身智能方向，现阶段更适合关注硬件/平台型公司，而非期待应用层大量PM岗位"}
+  ],
   product: {
     items: [
       {company:"阿里", product:"QoderWork（办公AI产品全系升级）", tag:"iter", users:"企业用户", highlight:"打通悟空协同Agent与MuleRun自动化流程引擎", source:"36氪", url:"https://36kr.com/p/3879665206407427"},
@@ -251,22 +264,8 @@ const REPORT = {
       {label:"哪类公司招聘在加速", text:"字节、阿里等大厂的Agent相关岗位 → 可作为重点投递方向"},
       {label:"面试可能被问到的热点话题", text:"AI拟人化新规对产品设计的影响、DeepSeek峰谷定价这类“用定价做产品”的案例 → 提前准备相关素材"}
     ]
-  },
-  xhs: {
-    quote: "今天刷到“元宝豆包千问下线智能体”的新闻，监管一出手，过去半年拼命堆的“拟人化”功能说没就没——做AI产品经理最怕的不是技术跟不上，是政策变化比迭代速度还快。",
-    topics: [
-      "选题1：从“智能体拟人化新规”看AI产品经理该如何提前预判政策风险",
-      "选题2：求职一线体感：大厂AI PM在抢的到底是“懂模型的人”还是“会落地的人”？"
-    ]
-  },
-  tags: ["#AI融资","#新产品","#AIPM求职","#竞品分析","#行业趋势","#AI监管","#Agent产品经理"]
+  }
 };
-
-function el(html){
-  const t = document.createElement('template');
-  t.innerHTML = html.trim();
-  return t.content;
-}
 
 function renderFunding(data){
   const rows = data.items.map(i => `
@@ -285,6 +284,24 @@ function renderFunding(data){
   `;
 }
 
+function renderKeyNews(items){
+  const rows = items.map((i, idx) => `
+    <div class="news-item">
+      <div class="news-title"><span class="idx">${idx+1}.</span><span>${i.event}</span></div>
+      <div class="news-row"><span class="k">发生了什么：</span>${i.what}</div>
+      <div class="news-row"><span class="k">为什么重要：</span>${i.why}</div>
+      <div class="news-row"><span class="k">说明什么趋势：</span>${i.trend}</div>
+      <div class="news-row"><span class="k">对求职的启示：</span>${i.implication}</div>
+    </div>
+  `).join('') || '<div class="empty">本周暂无显著动态</div>';
+  return `
+    <section class="section">
+      <h2>🚀 二、重点资讯</h2>
+      ${rows}
+    </section>
+  `;
+}
+
 function renderProduct(data){
   const rows = data.items.map(i => `
     <div class="card-item">
@@ -296,7 +313,7 @@ function renderProduct(data){
   `).join('') || '<div class="empty">本周暂无显著动态</div>';
   return `
     <section class="section">
-      <h2>🚀 二、大公司新应用</h2>
+      <h2>🚀 三、大公司新应用</h2>
       ${rows}
       ${renderSummary('产品小结', data.summary)}
     </section>
@@ -314,7 +331,7 @@ function renderJobs(data){
   `).join('') || '<div class="empty">本周暂无显著动态</div>';
   return `
     <section class="section">
-      <h2>👔 三、职位与人才市场</h2>
+      <h2>👔 四、职位与人才市场</h2>
       ${rows}
       ${renderSummary('职位小结', data.summary)}
     </section>
@@ -332,7 +349,7 @@ function renderCompetitors(data){
   `).join('') || '<div class="empty">本周暂无显著动态</div>';
   return `
     <section class="section">
-      <h2>🔍 四、竞品拆解</h2>
+      <h2>🔍 五、产品拆解</h2>
       ${rows}
       ${renderSummary('竞品小结', data.summary)}
     </section>
@@ -350,7 +367,7 @@ function renderTargetCompanies(data){
     : '<div class="empty">本周暂无显著动态</div>';
   return `
     <section class="section">
-      <h2>🏢 五、目标公司情报</h2>
+      <h2>🏢 六、目标公司情报</h2>
       ${rows}
       ${renderSummary('公司情报小结', data.summary)}
     </section>
@@ -366,7 +383,7 @@ function renderSignals(data){
   `).join('');
   return `
     <section class="section">
-      <h2>🔗 六、综合信号与求职洞察</h2>
+      <h2>🔗 七、综合信号与求职洞察</h2>
       <div class="signal-block">
         <div class="signal-label">赛道信号</div>
         ${track}
@@ -374,29 +391,6 @@ function renderSignals(data){
       <div class="signal-block">
         <div class="signal-label">求职信号</div>
         ${job}
-      </div>
-    </section>
-  `;
-}
-
-function renderXhs(data){
-  return `
-    <section class="section">
-      <h2>📝 七、小红书内容素材</h2>
-      <div class="xhs-quote">${data.quote}</div>
-      <div class="xhs-topics">
-        ${data.topics.map(t => `<div>${t}</div>`).join('')}
-      </div>
-    </section>
-  `;
-}
-
-function renderTags(tags){
-  return `
-    <section class="section">
-      <h2>📌 八、今日标签</h2>
-      <div class="tags">
-        ${tags.map(t => `<span class="tag">${t}</span>`).join('')}
       </div>
     </section>
   `;
@@ -421,13 +415,12 @@ function render(){
       <div class="tagline">求职信息助手 · 每日更新</div>
     </header>
     ${renderFunding(REPORT.funding)}
+    ${renderKeyNews(REPORT.keyNews)}
     ${renderProduct(REPORT.product)}
     ${renderJobs(REPORT.jobs)}
     ${renderCompetitors(REPORT.competitors)}
     ${renderTargetCompanies(REPORT.targetCompanies)}
     ${renderSignals(REPORT.signals)}
-    ${renderXhs(REPORT.xhs)}
-    ${renderTags(REPORT.tags)}
     <div class="footer-tip">💡 如需深入了解某条情报，告诉我"帮我展开XX公司"或"分析XX产品"，我会单独搜索。</div>
   `;
 }
