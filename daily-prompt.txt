@@ -1,0 +1,84 @@
+你要为用户的"AI PM 求职情报日报" H5 页面生成今天的新内容并发布上线。这是一个每日自动执行的任务，完全独立执行，不要询问用户任何问题，不要等待确认，执行完直接结束。
+
+**重要：这个任务和用户平时交互使用共享同一个 Claude 订阅额度，之前因为搜索量太大（40多次搜索）连续几天撞到额度限制导致更新失败。这次改版的核心目标是大幅减少搜索次数、控制整体消耗，同时用历史归档弥补信息量的减少。请严格按照下面精简后的步骤执行，不要自行扩展搜索范围。**
+
+## 背景
+
+用户是一位有7年经验的增长产品经理，有在线教育、跨境电商经验，目标是转型进入AI行业做 AI 增长产品经理 / AI 商业化产品经理。目标公司类型：大厂AI应用 / 行业龙头AI应用 / AI创业公司。
+
+页面文件路径：/Users/clairewei/.claude/ai-pm-job-intel-h5-automation/index.html
+该文件是一个单文件H5页面，页面里有一个 const REPORT = {...} 的 JS 对象，渲染函数会读取这个对象展示成卡片式日报。你只需要替换这个 REPORT 对象的内容，不要改动 CSS 样式和渲染函数逻辑。
+
+历史归档目录：/Users/clairewei/.claude/ai-pm-job-intel-h5-automation/history/，每天的完整 REPORT JSON 存一份，文件名为 YYYY-MM-DD.json。
+
+GitHub 仓库：本地目录已经是 git 仓库，remote origin 指向 https://github.com/claire711suk/ai-pm-job-intel-h5.git，分支 main。GitHub CLI (gh) 已经登录授权，可执行 push。
+
+## 第一步：读取历史背景（先做这个，成本很低）
+
+用 Bash 执行 `ls -t history/*.json 2>/dev/null | head -3`，用 Read 工具读取这最近3天（如果不足3天就读实际存在的）的历史 JSON 文件内容，了解最近报道过什么，避免今天的报告和历史内容简单重复。如果 history/ 目录是空的（第一次跑这个新流程），跳过这一步即可。
+
+## 第二步：只搜索"今天"的新闻（这是精简的核心，务必控制在下面的搜索次数内）
+
+用 WebSearch 工具搜索，时间范围优先限定在**近24-48小时**（不要像以前一样搜"2026年最新"这种宽泛年度范围）：
+
+**目标公司（12家，每家只搜1次，不要拆成多个维度分别搜）：**
+逐一搜索"<公司名> AI 今天"或"<公司名> AI 最新动态"，覆盖：阿里、腾讯、字节、百度、美团、小米、DeepSeek、智谱、MiniMax、月之暗面、百川智能、阶跃星辰。
+每次搜索结果里可能同时包含融资/产品/招聘/战略等多类信息，自己从结果里分类整理到对应的 JSON 字段，不需要为每个维度再单独搜一次。
+
+**通用行业维度（合计只搜4次）：**
+- AI 融资 今天 最新
+- AI 新产品 发布 今天
+- AI产品经理 招聘 今天
+- AI 行业动态 今天
+
+**搜索总量控制在 16 次左右（12家公司 + 4条通用），不要额外增加搜索次数。**
+
+信息筛选原则：
+- 只要近24-48小时内的信息；实在没有近期动态的公司，如实写"今日暂无显著动态"，不要为了凑数去挖旧闻
+- 区分"全新产品"和"已有产品迭代"
+- 标注真实来源网站名和URL，不要编造链接
+- 忽略广告软文
+- 绝不编造内容
+- 每条重要事件要分析：发生了什么、为什么重要、说明什么趋势、对求职是否有启示
+- **结合第一步读到的历史背景**：如果某个话题已经连续出现多天（比如同一个定价策略/同一场大会），在小结或综合信号部分体现"连续性判断"（例如"这是XX话题连续第3天成为热点，说明..."），而不是每天孤立地重复描述同一件事
+
+## 第三步：整理成以下 JSON 结构
+
+```json
+{
+  "date": "YYYY年MM月DD日（今天）",
+  "funding": {"items":[{"company":"","round":"","amount":"","investor":"","type":"","desc":""}], "summary":["今日最热子赛道：...","值得关注的新公司：...","投资方偏好信号：..."]},
+  "keyNews": [{"event":"","what":"","why":"","trend":"","implication":""}],
+  "product": {"items":[{"company":"","product":"","tag":"new或iter","users":"","highlight":"","source":"","url":""}], "summary":["大厂今日发力方向：...","值得关注的新技术：...","国内vs海外对比：..."]},
+  "jobs": {"items":[{"company":"","title":"","type":"大厂或创业","req":"","salary":""}], "summary":["需求最多的公司类型：...","JD高频新要求：...","大厂vs创业差异：..."]},
+  "competitors": {"items":[{"product":"","company":"","type":"","feature":"","feedback":"","insight":""}], "summary":["最值得体验的产品：...","用户痛点：...","PM视角有意思的决策：..."]},
+  "targetCompanies": {"items":[{"company":"","update":"","type":"战略/组织/产品/文化/商业化"}], "summary":["正在扩张AI团队的公司：...","有组织调整的公司：...","创始人/负责人观点：..."]},
+  "signals": {"track":[{"label":"","text":""}], "job":[{"label":"","text":""}]}
+}
+```
+
+要求：keyNews 只需覆盖今天真正找到的重要事件，数量不足8条也没关系（不要为了凑数编造，宁可4-5条扎实的），按重要性排序，每条都要有判断不能只罗列事实；targetCompanies覆盖12家目标公司里今天有实质动态的；signals结合历史背景+今天数据给出对"增长/商业化PM求职"有用的洞察。所有内容必须基于真实搜索结果，不能编造公司名、数字、URL。
+
+## 第四步：归档历史 + 更新页面文件并发布
+
+1. 把第三步整理出的 JSON（原样，保留双引号的标准 JSON 格式即可）写入 /Users/clairewei/.claude/ai-pm-job-intel-h5-automation/history/<今天日期 YYYY-MM-DD>.json（用 Write 工具）
+2. 用 Read 工具读取 /Users/clairewei/.claude/ai-pm-job-intel-h5-automation/index.html，找到 const REPORT = { 到对应的 }; 这一整段
+3. 用 Edit 工具把这一整段替换成第三步整理出的新内容，转成 JS 对象字面量语法。**引号规则（严格遵守，这是硬性要求）**：
+   - 属性名不加引号：company:"..." 而不是 "company":"..."
+   - 所有字符串值必须用**标准 ASCII 直引号** " 包裹（就是英文键盘上 Shift+' 打出来的那个符号），**绝对不能**用中文全角弯引号 " 或 " 作为字符串的开始/结束符——JS 不认识这两个字符，用了会导致整个页面白屏
+   - 如果字符串内容本身需要强调某个词，用「」（中文直角引号）包住那个词，不要用 " " 或 " "，比如 "面试可能考察「用AI工具提升效率」的具体案例"
+4. 保持 REPORT 对象的字段结构、其余HTML/CSS/JS代码不变
+5. **提交前必须自检语法**，执行：
+node --check <(sed -n '/<script>/,/<\/script>/p' "/Users/clairewei/.claude/ai-pm-job-intel-h5-automation/index.html" | sed '1d;$d')
+如果这一步报错（SyntaxError），说明刚才的 Edit 里混入了错误引号或其他破坏语法的字符，必须先用 Edit 修正、重新执行这条检查命令直到不再报错，才能继续下一步。绝不能在语法检查报错的情况下继续提交。
+6. 顺便清理历史归档，避免无限增长：执行 `ls -t history/*.json 2>/dev/null | tail -n +31 | xargs -I{} rm -f {}`（只保留最近30天）
+7. 语法检查通过后执行：
+cd "/Users/clairewei/.claude/ai-pm-job-intel-h5-automation"
+git add index.html history/
+git -c user.name="claire711suk" -c user.email="claire711suk@gmail.com" commit -m "Daily update: <今天日期>"
+git push
+8. 确认 git push 输出显示推送成功（能看到 commit hash 更新到 origin/main）
+
+页面上线地址（无需操作，GitHub Pages 会自动重新构建，通常1-2分钟生效）：https://claire711suk.github.io/ai-pm-job-intel-h5/
+
+完成后不需要额外汇报或询问，任务结束。
